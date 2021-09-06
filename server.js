@@ -1,6 +1,7 @@
 const mysql = require('mysql2');
 const inquirer = require ('inquirer');
 const PORT = process.env.PORT || 3001;
+const express = require ('express')
 const app = express();
 require("console.table");
 
