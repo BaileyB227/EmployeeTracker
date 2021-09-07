@@ -109,7 +109,7 @@ function viewDepts() {
 function viewRoles() {
   console.log("Viewing Roles");
 
-  const sql  = `SELECT title, roles.id, dname AS department, salary
+  const sql  = `SELECT roles.id, title, dname AS department, salary
   FROM department
   JOIN roles ON department.id = roles.department_id`
 
@@ -121,21 +121,125 @@ function viewRoles() {
 }
 
 function addDept() {
+  inquirer
+    .prompt([
+      {
+      type: "input",
+      name: "department",
+      message: "Department name?"
+      }
+    ])
+  .then(function (answer) {
+		const sql = "INSERT INTO department (dname) VALUES ( ? )";
+
+		db.query(sql, answer.department, function (err, res) {
+			if (err) throw err;
+    })
+    mainMenu();
+	});
+};
 
 
-}
-
-function updateRole(){
-
-
+function addEmployee(){
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "Employee first name?"
+      },
+      {
+        type: "input", 
+        name: "lastName",
+        message: "Employee last name?"
+      },
+      {
+        type: "input",
+        name: "roleId",
+        message: "What is their role id?"
+      },
+      {
+        type: "input",
+        name: "managerId",
+        message: "What is their manager id?"
+      }
+    ])
+  .then(function (answer) {
+    const sql = "INSERT INTO employee SET ?";
+  
+    db.query(sql, 
+     {
+      first_name: answer.firstName,
+      last_name: answer.lastName,
+      role_id: answer.roleId,
+      manager_id: answer.managerId
+    }, 
+      function (err, res) {
+       if (err) throw err;
+     })
+     mainMenu();
+  })
 }
 
 function addRole(){
-
-
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "title",
+        message: "What is the title?"
+      },
+      {
+        type: "input", 
+        name: "salary",
+        message: "What is the salary?"
+      },
+      {
+        type: "input",
+        name: "departmentId",
+        message: "What is the department id?"
+      }
+    ])
+  .then(function (answer) {
+    const sql = "INSERT INTO roles SET ?";
+  
+    db.query(sql, 
+     {
+      title: answer.title,
+      salary: answer.salary,
+      department_id: answer.departmentId
+    }, 
+      function (err, res) {
+       if (err) throw err;
+     })
+     mainMenu();
+  })
+ 
 }
 
+function updateRole(){
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "employeeId",
+        message: "Enter the id of the employee you want to update:"
+      },
+      {
+        type: "input",
+        name: "updatedRole",
+        message: "What is the ID of the role you want to give them?"
+      }
+    ])
+    .then(function (answer) {
+      const sql = `UPDATE employee SET role_id = ${answer.updatedRole} WHERE id = ${answer.employeeId}`
 
+      db.query(sql, function (err, res) {
+        if (err) throw err;
+      })
+      mainMenu();
+    })
+}
 
 app.use((req, res) => {
     res.status(404).end();
